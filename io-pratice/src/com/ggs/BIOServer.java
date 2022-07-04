@@ -8,10 +8,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * 不编写客户端，通过windows自带的telnet进行测试
- * 1.命令：telnet 127.0.0.1 6666
- * 2.Ctrl+]快捷键进入telnet命令窗口
- * 3.通过send命令发送消息(如：send hello)
+ * <p>不编写客户端，通过windows自带的telnet进行测试</p>
+ * <p>1.命令：telnet 127.0.0.1 6666</p>
+ * <p>2.Ctrl+]快捷键进入telnet命令窗口</p>
+ * <p>3.通过send命令发送消息(如：send hello)</p>
  */
 public class BIOServer {
 
