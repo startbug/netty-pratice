@@ -21,17 +21,21 @@ public class NewIOServer {
         ByteBuffer buffer = ByteBuffer.allocate(4096);
 
         while (true) {
-            SocketChannel socketChannel = serverSocketChannel.accept();
+            try {
+                SocketChannel socketChannel = serverSocketChannel.accept();
 
-            int len;
-            int totalSize = 0;
+                int len;
+                int totalSize = 0;
 
-            while ((len = socketChannel.read(buffer)) != -1) {
-                totalSize += len;
-                buffer.rewind();    // 倒带 position = 0, mark作废
+                while ((len = socketChannel.read(buffer)) != -1) {
+                    totalSize += len;
+                    buffer.rewind();    // 倒带 position = 0, mark作废
+                }
+
+                System.out.println(totalSize);
+            } catch (IOException e) {
+                System.out.println("再來一次");
             }
-
-            System.out.println(totalSize);
         }
 
     }
