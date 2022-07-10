@@ -34,6 +34,7 @@ public class GroupChatServer {
 
     // 监听
     public void listen() {
+        System.out.println("监听线程 " + Thread.currentThread().getName());
         while (true) {
             try {
                 int count = selector.select(2000);
@@ -114,6 +115,7 @@ public class GroupChatServer {
     // 转发消息给其他客户(通道)
     private void sendInfoToOtherClients(String msg, SocketChannel self) throws IOException {
         System.out.println("服务器转发消息中...");
+        System.out.println("服务器转发数据给线程：" + Thread.currentThread().getName());
 
         for (SelectionKey key : selector.keys()) {
             // 取出通道
