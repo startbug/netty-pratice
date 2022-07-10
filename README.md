@@ -23,7 +23,7 @@ Netty学习案例
 
 ![单Reactor多线程](./img/单Reactor多线程.png)
 
-### 方案说明
+### 方案说明：
 
 1. Reactor对象通过select监控客户端请求事件，收到事件后，通过dispatch进行分发
 2. 如果建立连接请求，则由Acceptor通过accept处理连接请求，然后创建Handler对象处理完成连接后的各种事件
