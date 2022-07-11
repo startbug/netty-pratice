@@ -37,3 +37,30 @@ Netty学习案例
 1. 优点：可以充分利用读懂和CPU的处理能力
 2. 缺点：多线程数据共享和访问比较复杂，Reactor处理所有的事件的监听和响应，在单线程运行，在高并发场景容易出现性能瓶颈
 
+## 主从Reactor多线程
+![主从Reactor多线程](./img/主从Reactor多线程.png)
+
+### 方案说明：
+1. Reactor主线程MainReactor对象通过select监听连接事件，收到事件后，通过Acceptor处理连接事件
+2. 当Acceptor处理连接事件后，MainReactor将连接分配给SubReactor
+3. SubReactor将连接加入到连接队列进行监听，并创建Handler进行各种事件处理
+4. 当有新事件发生时，SubReactor就会调用对应的Handler处理
+5. Handler通过read读取数据，分发给后面的Worker线程处理
+6. Worker线程池分配独立的Worker线程进行业务处理，并返回结果
+7. Handler收到响应的结果后，再通过send将结果返回给Client
+8. Reactor主线程(本身可以有多个)可以对应多个Reactor子线程，即MainReactor可以关联多个SubReactor
+
+
+方案优缺点说明：
+1. 优点1：父线程与子线程的数据交互简单职责明确，父线程只需要接收新连接，子线程完成后续的业务处理
+2. 优点2：父线程与子线程的数据交互简单，Reactor主线程只需要把新连接传给子线程，子线程无需返回数据
+3. 缺点：变成复杂度高
+结合实例：这种模型在许多项目中广泛使用，包括Nginx主从Reactor多进程模型，Memcached主从多线程，Netty主从多线程模型的支持
+
+
+## Reactor模式具有如下的优点：
+1. 响应快，不必为单个同步时间所阻塞，虽然Reactor本身依然是同步的
+2. 可以最大程度的避免复杂的多线程及同步问题，并且避免了多线程/进程的切换开销
+3. 扩展性好，可以方便的通过增加Reactor实例个数来从分利用CPU资源
+4. 复用性好，Reactor模型本身与具体事件处理逻辑无关，具有很高的复用性
+
