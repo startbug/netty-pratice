@@ -40,30 +40,53 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        System.out.println(LocalDateTime.now().format(dtf));
-        // 加入此时有一个耗时很长得到业务 --> 异步执行 --> 提交到该Channel的对应的NIOEventLoop的taskQueue
+        System.out.println("111111111111111111111" + LocalDateTime.now().format(dtf));
+
+        // ---------------------------------用户程序自定义的普通任务-------------------------------------- begin
+        // 加入此时有一个耗时很长的业务 --> 异步执行 --> 提交到该Channel的对应的NIOEventLoop的taskQueue
+        // 在taskQueue中的任务，也是同一个线程执行的，所以先执行完任务1才会执行任务2
         ctx.channel().eventLoop().execute(() -> {
+            // 任务1
             try {
                 TimeUnit.SECONDS.sleep(5);
                 ctx.writeAndFlush(Unpooled.copiedBuffer("hello 客户端-111111111---", CharsetUtil.UTF_8));
-                System.out.println(LocalDateTime.now().format(dtf));
+                System.out.println("22222222222222222222" + LocalDateTime.now().format(dtf));
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         });
 
-
+        System.out.println("333333333333333333333" + LocalDateTime.now().format(dtf));
         ctx.channel().eventLoop().execute(() -> {
+            // 任务2
             try {
                 TimeUnit.SECONDS.sleep(10);
                 ctx.writeAndFlush(Unpooled.copiedBuffer("hello 客户端-22222222222---", CharsetUtil.UTF_8));
-                System.out.println(LocalDateTime.now().format(dtf));
+                System.out.println("444444444444444444444" + LocalDateTime.now().format(dtf));
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         });
+        // ---------------------------------用户程序自定义的普通任务-------------------------------------- end
 
+        System.out.println("555555555555555555555" + LocalDateTime.now().format(dtf));
 
+        // ---------------------------------用户自定义定时任务-------------------------------------- begin
+        // 用户自定义定时任务 --> 提交到eventLoop中的scheduledTaskQueue中
+        ctx.channel().eventLoop().schedule(() -> {
+            // 定时任务
+            try {
+                TimeUnit.SECONDS.sleep(5);
+                ctx.writeAndFlush(Unpooled.copiedBuffer("hello,客户端---喵捏嘎", CharsetUtil.UTF_8));
+                System.out.println("66666666666666666" + LocalDateTime.now().format(dtf));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }, 5, TimeUnit.SECONDS);
+
+        // ---------------------------------用户自定义定时任务-------------------------------------- end
+
+        System.out.println("7777777777777777777" + LocalDateTime.now().format(dtf));
         System.out.println("客户端发送消息是: " + buf.toString(CharsetUtil.UTF_8));
         System.out.println("客户端地址: " + ctx.channel().remoteAddress());
     }
