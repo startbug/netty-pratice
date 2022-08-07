@@ -1,6 +1,4 @@
-Netty学习案例
-
-## Netty官方介绍
+# Netty官方介绍
 
 > Netty is an asynchronous event-driven network application framework
 > for rapid development of maintainable high performance protocol servers & clients.<br/>
@@ -63,4 +61,35 @@ Netty学习案例
 2. 可以最大程度的避免复杂的多线程及同步问题，并且避免了多线程/进程的切换开销
 3. 扩展性好，可以方便的通过增加Reactor实例个数来从分利用CPU资源
 4. 复用性好，Reactor模型本身与具体事件处理逻辑无关，具有很高的复用性
+
+
+
+
+
+# Netty模型
+
+方案説明：
+
+1. Netty抽象出两组线程池，BossGroup专门负责接收客户端连接，WorkerGroup专门负责网络读写操作。
+2. NioEventLoop表示一个不断循环执行处理任务的线程，每个NioEventLoop都有一个Selector，用于监听绑定在其上的Socket网络通道
+3. NioEventLoop内部采用串行化设计，从消息的读取->解码->处理->发送，始终由IO线程NioEventLoop负责
+   1. NioEventLoopGroup下包含多个NioEventLoop
+   2. 每个NioEventLoop中包含一个Selector，一个taskQueue
+   3. 每个NioEventLoop的Seletor上可以注册监听多个NioChannel
+   4. 每个NioChannel只会绑定在唯一的NioEventLoop上
+   5. 每个NioChannel都绑定一个自己的ChannelPipeline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
