@@ -54,6 +54,7 @@ public class MyServer {
                             pipeline.addLast(new WebSocketServerProtocolHandler("/hello")); // WebSocketServerProtocolHandler入参表示为访问的地址uri
 
                             // 自定义handler,处理业务逻辑
+                            pipeline.addLast(new MyTextWebSocketFrameHandler());
                         }
                     });
 
