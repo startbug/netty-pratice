@@ -10,6 +10,13 @@ import java.util.Arrays;
 /**
  * <p>Scattering：将数据写入到buffer时，可以采用buffer数组，依次写入(分散)</p>
  * <p>Gathering：从Buffer读取数据时，可以采用buffer数组，依次读取(聚合)</p>
+ * <p>测试步骤:</p>
+ * <ol>
+ *     <li>进入cmd命令行</li>
+ *     <li>执行<b>telnet</b>命令</li>
+ *     <li>点击<b>Ctrl+]</b>快捷键进入telnet命令行</li>
+ *     <li>通过<b>send</b>命令发送消息</li>
+ * </ol>
  */
 public class ScatteringAndGatheringTest {
 
